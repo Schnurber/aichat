@@ -1,4 +1,4 @@
-# A ai chat Flet app
+# An AI chat app made with Flet
 
 A small and customisable app programmed in flet to chat with chatgpt via the openai interface. Easily customisable, clearly understandable.
 
