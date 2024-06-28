@@ -14,3 +14,14 @@ To run the app:
 pip install flet
 flet run 
 ```
+I have found that newer versions of Flet do not work on the Mac. Version 0.22.0 works for me:
+
+```
+pip install flet==0.22.0
+```
+
+Build the app:
+
+```
+flet build macos 
+```
