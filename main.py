@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #customize first question and the role
-question = 'Wie gehen Vergleiche in Python?'
-role = 'Du bist ein professioneller Python-Lehrer.'
+question = 'How do comparisons work in Python?'
+role = 'You are a professional Python teacher.'
 
 client = OpenAI()
 
