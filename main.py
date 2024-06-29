@@ -39,6 +39,7 @@ def main(page: ft.Page):
         responseText = ''
     
         question = tf.value
+        tf.value = ''
         mdQuestion =  getMD(question)
 
         messages.insert(0,ft.Card(
