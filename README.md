@@ -1,6 +1,6 @@
 # An AI Chat app that talks to itself
 
-A small and customisable app programmed in flet to chat with chatgpt via the openai interface. Easily customisable, clearly understandable. Talks to itself!
+A small and customisable app programmed in flet to chat with chatgpt via the openai interface. Easily customisable, clearly understandable. Talks to itself! With audio output!
 
 ![AI Chat](screenshot.png)
 
