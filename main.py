@@ -1,12 +1,13 @@
 import flet as ft
 from openai import OpenAI
+from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
 #customize first question and the role
-question = 'Who are you?'
-role = 'You have a conversation and give a short answer. The last sentence is always a question'
-
+question = 'Wer bist Du?'
+role = 'Du führst eine Unterhaltung und gibst eine kurze Antwort. Der letzte Satz ist immer eine Frage'
+speech_file_path = Path(__file__).parent / "speech.mp3"
 MAX_ROUNDS = 100
 
 numRounds = 0
@@ -15,6 +16,7 @@ client2 = OpenAI()
 client = client1
 
 isAsking = False
+isPlaying = False
 
 def main(page: ft.Page):
     messages = []
@@ -37,7 +39,7 @@ def main(page: ft.Page):
                 color=ft.colors.GREY_700, margin=ft.Margin(left=0,right=10, top=5, bottom=5))
         
     def ask(e):
-        global isAsking, numRounds, MAX_ROUNDS, client
+        global isAsking, numRounds, MAX_ROUNDS, client, isPlaying
         question = tf.value
         numRounds = 0
         if isAsking or question == '':
@@ -78,6 +80,29 @@ def main(page: ft.Page):
             except:
                 txt.value = ' NO INTERNET CONNECTION!'
                 lf.scroll_to(0.0, duration=500)
+
+            with client.audio.speech.with_streaming_response.create(
+                model="tts-1",
+                voice="alloy" if client==client1 else "onyx",
+                input=responseText,
+            ) as response:
+                response.stream_to_file(speech_file_path)
+                while (not response.is_closed):
+                    pass
+
+            audio1 = ft.Audio( src=speech_file_path, autoplay=True)
+            page.overlay.append(audio1)
+            isPlaying = True
+            def ply(e):
+                global isPlaying
+                if e.data == 'completed':
+                    isPlaying = False
+                    
+            audio1.on_state_changed = ply
+            while isPlaying:
+                page.update()
+            #remove last audio    
+            page.overlay.pop()
             question = responseText
 
             if client == client1:
