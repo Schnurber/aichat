@@ -1,14 +1,19 @@
 import flet as ft
-from openai import OpenAI
-from dotenv import load_dotenv
-load_dotenv()
-
+from gpt4all import GPT4All
 #customize first question and the role
-question = 'Who was Ada Lovelace?'
-role = 'You are William Shakespeare and you only speak in rhyme.'
 
-client = OpenAI()
+client = GPT4All("Meta-Llama-3-8B-Instruct.Q4_0.gguf")
 
+#question = 'Who was Ada Lovelace?'
+#role = 'You are William Shakespeare and you only speak in rhyme.'
+# works also in German
+question = 'Wer war Ada Lovelace?'
+role = 'Du bist Johann Wolfgang von Goethe und sprichst nur in Reimen.'
+
+# use other files from huggingface:
+# Download: 
+# https://huggingface.co/TheBloke/em_german_leo_mistral-GGUF/blob/main/em_german_leo_mistral.Q2_K.gguf
+# client = GPT4All(model_name="em_german_leo_mistral.Q2_K.gguf", model_path='../../Downloads')
 isAsking = False
 
 def main(page: ft.Page):
@@ -42,22 +47,17 @@ def main(page: ft.Page):
             del messages[-2:] #if it is too long
           
         try:
-            stream = client.chat.completions.create(
-                model="gpt-4-turbo",
-                stream=True,
-                messages=[
-                    {"role": "system", "content": role},
-                    {"role": "user", "content": question}
-                ]
+            stream = client.generate(
+                streaming=True,
+                prompt=role + ' ' + question + '', # modify for other prompt template
             )
             for chunk in stream:
-                msg = chunk.choices[0].delta
-                if msg.content is not None:
-                    responseText += msg.content
+                if chunk is not None:
+                    responseText += chunk if chunk != ' \n' else ''
                     txt.value = responseText
                     lf.scroll_to(0.0, duration=500)
                     page.update()
-        except:
+        except Exception as e:
             txt.value = ' NO INTERNET CONNECTION!'
             lf.scroll_to(0.0, duration=500)
 
