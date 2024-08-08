@@ -11,7 +11,6 @@ role = 'You have a conversation and give a short answer. The last sentence is al
 
 MAX_ROUNDS = 100
 
-numRounds = 0
 client1 = OpenAI()
 client2 = OpenAI()
 client = client1
@@ -19,6 +18,7 @@ client = client1
 isAsking = False
 
 def main(page: ft.Page):
+    numRounds = 0
     messages = []
     tf = ft.TextField(value=question, expand=True, 
                       autofocus=True, shift_enter=True,
@@ -27,7 +27,7 @@ def main(page: ft.Page):
     btt = ft.IconButton(icon=ft.icons.PLAY_ARROW)
     btt_stop = ft.IconButton(icon=ft.icons.STOP)
     btt_stop.disabled = True
-
+    txt_num = ft.Text('Please enter start-question!')
     def getCard(txt, ab):
         if ab:
             return ft.Card(
@@ -41,7 +41,7 @@ def main(page: ft.Page):
     def ask(e):
         global isAsking, numRounds, MAX_ROUNDS, client, f
          # for logging conversation
-        f = open(f'conversations/conversation_{datetime.now()}.txt', 'a', encoding='UTF-8')
+        f = open(f'conversations/conversation_{datetime.now().isoformat(sep="-", timespec="seconds")}.txt', 'a+', encoding='UTF-8')
         question = tf.value
         numRounds = 0
         if isAsking or question == '':
@@ -55,6 +55,7 @@ def main(page: ft.Page):
         
         while numRounds < MAX_ROUNDS:
             numRounds += 1
+            txt_num.value = str(numRounds) + ' of ' + str(MAX_ROUNDS)
             responseText = ''
             tf.value = ''
             
@@ -91,7 +92,7 @@ def main(page: ft.Page):
             else:
                 client = client1
 
-
+        summary()
         btt.disabled = False
         btt_stop.disabled = True
         page.update()
@@ -102,6 +103,24 @@ def main(page: ft.Page):
         global numRounds
         numRounds = MAX_ROUNDS
         btt_stop.disabled = True
+
+    def summary():
+        # summarize
+        f.flush()
+        f.seek(0)
+        text = ''
+        for line in f:
+            text += line
+        summary = OpenAI()
+        response = summary.chat.completions.create(
+                    model="gpt-4-turbo",
+                    messages=[
+                        {"role": "system", "content": "You are Summary AI."},
+                        {"role": "user", "content": f"Summarize this conversation between A and B briefly:\n\n{text}"}
+                    ]
+                )
+        f.write("\nSummary:\n")
+        f.write(response.choices[0].message.content)
         f.close()
 
     btt.on_click = ask
@@ -117,6 +136,11 @@ def main(page: ft.Page):
                 controls=[
                 tf,
                 btt, btt_stop
+            ]),
+            ft.Row(
+                alignment=ft.MainAxisAlignment.CENTER,
+                controls=[
+                txt_num,
             ])
         ])
     )
