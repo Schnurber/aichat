@@ -46,12 +46,12 @@ def main(page: ft.Page):
         numRounds = 0
         if isAsking or question == '':
             return
-        
         isAsking = True
         btt.disabled = True
         btt_stop.disabled = False
         quest = ft.Text(question, selectable=True)
         messages.insert(0,getCard(quest,True))
+        f.write(f'{question}\n')
         
         while numRounds < MAX_ROUNDS:
             numRounds += 1
