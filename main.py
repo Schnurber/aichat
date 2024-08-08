@@ -1,8 +1,10 @@
 import flet as ft
 from openai import OpenAI
 from dotenv import load_dotenv
+from datetime import datetime
+import sys
 load_dotenv()
-
+f = None
 #customize first question and the role
 question = 'Who are you?'
 role = 'You have a conversation and give a short answer. The last sentence is always a question'
@@ -37,7 +39,9 @@ def main(page: ft.Page):
                 color=ft.colors.GREY_700, margin=ft.Margin(left=0,right=10, top=5, bottom=5))
         
     def ask(e):
-        global isAsking, numRounds, MAX_ROUNDS, client
+        global isAsking, numRounds, MAX_ROUNDS, client, f
+         # for logging conversation
+        f = open(f'conversations/conversation_{datetime.now()}.txt', 'a', encoding='UTF-8')
         question = tf.value
         numRounds = 0
         if isAsking or question == '':
@@ -72,9 +76,11 @@ def main(page: ft.Page):
                     msg = chunk.choices[0].delta
                     if msg.content is not None:
                         responseText += msg.content
+                        f.write(msg.content)
                         txt.value = responseText
                         lf.scroll_to(0.0, duration=500)
                         page.update()
+                f.write('\n')
             except:
                 txt.value = ' NO INTERNET CONNECTION!'
                 lf.scroll_to(0.0, duration=500)
@@ -96,6 +102,7 @@ def main(page: ft.Page):
         global numRounds
         numRounds = MAX_ROUNDS
         btt_stop.disabled = True
+        f.close()
 
     btt.on_click = ask
     tf.on_submit = ask
