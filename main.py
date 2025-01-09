@@ -2,6 +2,8 @@ import flet as ft
 from config import conf
 from openai import OpenAI
 from pathlib import Path
+from datetime import datetime
+import sys
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -39,7 +41,9 @@ def main(page: ft.Page):
                 color=ft.colors.BLUE_400, margin=ft.Margin(left=10,right=0, top=5, bottom=5))
         
     def ask(e):
-        global isAsking, numRounds, MAX_ROUNDS, client, isPlaying
+        global isAsking, numRounds, MAX_ROUNDS, client, isPlaying, f
+         # for logging conversation
+        f = open(f'conversations/conversation_{datetime.now().isoformat(sep="-", timespec="seconds")}.txt', 'a+', encoding='UTF-8')
         question = tf.value
         numRounds = 0
         if isAsking or question == '':
@@ -50,6 +54,7 @@ def main(page: ft.Page):
         btt_stop.disabled = False
         quest = ft.Text(question, selectable=True)
         messages.insert(0,getCard(quest,False))
+        f.write(f'{question}\n')
         responseText = question
         
         while numRounds < MAX_ROUNDS:
@@ -75,9 +80,11 @@ def main(page: ft.Page):
                         msg = chunk.choices[0].delta
                         if msg.content is not None:
                             responseText += msg.content
+                            f.write(msg.content)
                             txt.value = responseText
                             lf.scroll_to(0.0, duration=500)
                             page.update()
+                    f.write('\n')
                 except:
                     txt.value = ' NO INTERNET CONNECTION!'
                     lf.scroll_to(0.0, duration=500)
@@ -113,7 +120,7 @@ def main(page: ft.Page):
             else:
                 client = moderator
 
-
+        summary()
         btt.disabled = False
         btt_stop.disabled = True
         page.update()
@@ -124,6 +131,25 @@ def main(page: ft.Page):
         global numRounds
         numRounds = MAX_ROUNDS
         btt_stop.disabled = True
+
+    def summary():
+        # summarize
+        f.flush()
+        f.seek(0)
+        text = ''
+        for line in f:
+            text += line
+        summary = OpenAI()
+        response = summary.chat.completions.create(
+                    model="gpt-4-turbo",
+                    messages=[
+                        {"role": "system", "content": "You are Summary AI."},
+                        {"role": "user", "content": f"Summarize this conversation between A and B briefly:\n\n{text}"}
+                    ]
+                )
+        f.write("\nSummary:\n")
+        f.write(response.choices[0].message.content)
+        f.close()
 
     btt.on_click = ask
     tf.on_submit = ask
