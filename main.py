@@ -9,7 +9,6 @@ load_dotenv()
 
 
 
-speech_file_path = Path(__file__).parent / "speech.mp3"
 MAX_ROUNDS = 100
 
 numRounds = 0
@@ -88,7 +87,7 @@ def main(page: ft.Page):
                 except:
                     txt.value = ' NO INTERNET CONNECTION!'
                     lf.scroll_to(0.0, duration=500)
-
+            speech_file_path = Path(__file__).parent / f'audios/audio_{datetime.now().isoformat(sep="-", timespec="seconds")}.mp3'
             with client.audio.speech.with_streaming_response.create(
                 model="tts-1",
                 voice="alloy" if client == moderator else "onyx",
@@ -109,8 +108,7 @@ def main(page: ft.Page):
             audio1.on_state_changed = ply
             page.update()
             while isPlaying:
-                pass
-            page.update()
+                page.update()
             #remove last audio    
             page.overlay.pop()
             question = responseText
