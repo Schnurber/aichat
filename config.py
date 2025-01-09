@@ -1,5 +1,9 @@
 # Bit-Cast App
 #customize first question and the role
+from dotenv import load_dotenv
+
+load_dotenv()
+
 conf = {
 'moderator' : {
     'role' : 'Du bist der Moderator eines Podcasts. Der letzte Satz ist immer eine Frage.',
