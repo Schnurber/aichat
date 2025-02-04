@@ -2,9 +2,10 @@ import flet as ft
 from config import conf
 from ai_client import AIClient
 from ui_components import create_text_field, create_list_view, create_icon_buttons, create_card
-from utils import get_conversation_file, get_audio_file_path
+from utils import get_conversation_file, get_audio_file_path, finishPodcast, summary
+import random
 
-MAX_ROUNDS = 100
+MAX_ROUNDS = 30
 
 def main(page: ft.Page):
     messages = []
@@ -15,12 +16,7 @@ def main(page: ft.Page):
         numRounds = MAX_ROUNDS
         btt_stop.disabled = True
 
-    def summary(f):
-        f.flush()
-        f.seek(0)
-        text = f.read()
-        summary_response = ai_client.get_summary_response(text)
-        f.write("\nSummary:\n" + summary_response)
+
 
     def ask(e):
         global isAsking, numRounds, isPlaying
@@ -50,7 +46,8 @@ def main(page: ft.Page):
                         del messages[-2:]
                     
                     try:
-                        stream = ai_client.get_stream_response(question, conf['moderator']['role'] if ai_client.current == ai_client.moderator else conf['specialist']['role'])
+                        summa = summary(f, ai_client)
+                        stream = ai_client.get_stream_response(question, conf['moderator']['role'] + random.choice([" Der letzte Satz ist eine Frage. ",""]) if ai_client.current == ai_client.moderator else conf['specialist']['role'], summa)
                         for chunk in stream:
                             msg = chunk.choices[0].delta
                             if msg.content:
@@ -94,7 +91,7 @@ def main(page: ft.Page):
 
                 ai_client.switch_client()
 
-            summary(f)
+            finishPodcast(f, ai_client)
             btt.disabled = False
             btt_stop.disabled = True
             page.update()
@@ -108,8 +105,6 @@ def main(page: ft.Page):
     global isAsking, numRounds, isPlaying
     isAsking = False
     isPlaying = False
-
-    
 
     container = ft.Container(
         expand=True,
