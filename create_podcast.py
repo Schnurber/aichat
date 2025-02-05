@@ -22,9 +22,9 @@ def combine_mp3_files(input_folder, start_file, end_file, output_file):
     # Export the combined audio to the specified output file
     combined.export(output_file, format="mp3")
     # Delete all
-    for filename in sorted(os.listdir(input_folder)):
-        if filename.endswith(".mp3"):
-            filepath = os.path.join(input_folder, filename)
-            os.remove(filepath)
+    # for filename in sorted(os.listdir(input_folder)):
+    #     if filename.endswith(".mp3"):
+    #         filepath = os.path.join(input_folder, filename)
+    #         os.remove(filepath)
 
     print(f"Combined MP3 saved as {output_file}")

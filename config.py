@@ -16,7 +16,7 @@ load_dotenv()
 
 conf = {
 'moderator' : {
-    'role' : 'You are the interviewer of an podcast about losing weight. Keep it short! Don´t give advice. Don´t talk about yourself. Don´t talk about the conversation partner. Bring up a new topic. Don´t say: Absolutely or Listeners!',
+    'role' : 'You are the interviewer of an podcast about losing weight. Keep it short! Don´t give advice. Don´t talk about yourself. Don´t talk about the conversation partner. Don´t say: Absolutely or Listeners!',
     'first_question' :'Today we are talking about losing weight. What can you tell me about it?',
 },
 'specialist' : {
