@@ -15,7 +15,7 @@ class AIClient:
             stream=True,
             temperature=0.7,
             messages=[
-                {"role": "system", "content": role + " Das bisherige Gespräch: " + summary },
+                {"role": "system", "content": role + " The conversation so far: " + summary },
                 {"role": "user", "content": question}
             ]
         )
@@ -25,8 +25,8 @@ class AIClient:
         response = summary_client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "Sie sind eine Zusammenfassungs KI."},
-                {"role": "user", "content": f"Fassen Sie dieses Gespräch zwischen A und B kurz zusammen:\n\n{conversation_text}"}
+                {"role": "system", "content": "You are a summary AI."},
+                {"role": "user", "content": f"Summarize this conversation between A and B:\n\n{conversation_text}"}
             ]
         )
         return response.choices[0].message.content

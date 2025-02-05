@@ -12,6 +12,7 @@ def summary(f, ai_client):
     f.seek(0)
     text = f.read()
     print(text)
+    #return text
     return ai_client.get_summary_response(text)
 
 def finishPodcast(f, ai_client):
@@ -20,6 +21,7 @@ def finishPodcast(f, ai_client):
     #assemble
     # Example usage:
     input_folder = Path(__file__).parent / 'audios'
-    
+    start_file = Path(__file__).parent / 'static/start.mp3'
+    end_file = Path(__file__).parent / 'static/end.mp3'
     output_file = Path(__file__).parent / f'result/result{datetime.now().isoformat(sep="-", timespec="seconds")}.mp3'
-    combine_mp3_files(input_folder, output_file)
+    combine_mp3_files(input_folder, start_file, end_file, output_file)
