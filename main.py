@@ -47,7 +47,7 @@ def main(page: ft.Page):
                     
                     try:
                         #summa = summary(f, ai_client)
-                        stream = ai_client.get_stream_response(question, conf['moderator']['role'] + random.choice([" Der letzte Satz ist eine Frage. ",""]) if ai_client.current == ai_client.moderator else conf['specialist']['role'], responseText)
+                        stream = ai_client.get_stream_response(question, conf['moderator']['role'] + random.choice([" The last sentence is a question. ",""]) if ai_client.current == ai_client.moderator else conf['specialist']['role'], responseText)
                         for chunk in stream:
                             msg = chunk.choices[0].delta
                             if msg.content:
@@ -62,7 +62,7 @@ def main(page: ft.Page):
                         lf.scroll_to(0.0, duration=500)
                 
                 speech_file_path = get_audio_file_path()
-                with ai_client.current.audio.speech.with_streaming_response.create(
+                with ai_client.cptModel.audio.speech.with_streaming_response.create(
                     model="tts-1",
                     voice="alloy" if ai_client.current == ai_client.moderator else "onyx",
                     input=responseText,

@@ -6,10 +6,10 @@ load_dotenv()
 
 conf = {
 'moderator' : {
-    'role' : 'Du bist der Moderator eines Podcasts über die Geschichte des Computers. Dur stellst nur Fragen über die Geschichte des Computers, nicht über die Zukunft.',
-    'first_question' :'Heute sprechen wir über die Geschichte des Computers. Was kannst Du mir darüber sagen?',
+    'role' : 'You are the host of an audio podcast about losing weight. You ask your conversation partner, a nutrition specialist, questions about losing weight.',
+    'first_question' :'Today we are talking about losing weight. What can you tell me about it?',
 },
 'specialist' : {
-    'role' : 'Du bist Historiker und kennst dich mit der Geschichte des Computers sehr gut aus. Du sprichst mit einem Moderator in einem Podcast über die Geschichte des Computers, nicht über die Zukunft. Kurze Antwort bitte.',
+    'role' : 'You are a nutrition specialist and answer questions about losing weight. Please give short answers.',
 },
 }

@@ -1,13 +1,17 @@
-from langchain_openai import ChatOpenAI
+from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from openai import OpenAI
+
 import random
 class AIClient:
     def __init__(self):
         model = "gpt-4o"
+        temperature = 0.7
         self.store = {}
-        moderator =  ChatOpenAI(model_name=model)
-        specialist = ChatOpenAI(model_name=model)
+        self.cptModel = OpenAI()
+        moderator =  ChatOpenAI(model_name=model, temperature=temperature, streaming=True)
+        specialist = ChatOpenAI(model_name=model, temperature=temperature, streaming=True)
         
         self.moderator = RunnableWithMessageHistory(moderator, self.get_session_history)
         self.specialist = RunnableWithMessageHistory(specialist, self.get_session_history)
@@ -34,12 +38,11 @@ class AIClient:
 
     
     def get_summary_response(self, conversation_text):
-        summary_client = OpenAI()
-        response = summary_client.chat.completions.create(
+        response = self.cptModel.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "Sie sind eine Zusammenfassungs KI."},
-                {"role": "user", "content": f"Fassen Sie dieses Gespräch zwischen A und B kurz zusammen:\n\n{conversation_text}"}
+                {"role": "system", "content": "You are a summary AI."},
+                {"role": "user", "content": f"Summarize this conversation between A and B:\n\n{conversation_text}"}
             ]
         )
         return response.choices[0].message.content
