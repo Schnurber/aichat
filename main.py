@@ -46,8 +46,8 @@ def main(page: ft.Page):
                         del messages[-2:]
                     
                     try:
-                        summa = summary(f, ai_client)
-                        stream = ai_client.get_stream_response(question, conf['moderator']['role'] + random.choice([" Der letzte Satz ist eine Frage. ",""]) if ai_client.current == ai_client.moderator else conf['specialist']['role'], summa)
+                        #summa = summary(f, ai_client)
+                        stream = ai_client.get_stream_response(question, conf['moderator']['role'] + random.choice([" Der letzte Satz ist eine Frage. ",""]) if ai_client.current == ai_client.moderator else conf['specialist']['role'], responseText)
                         for chunk in stream:
                             msg = chunk.choices[0].delta
                             if msg.content:
