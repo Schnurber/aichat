@@ -5,7 +5,7 @@ from ui_components import create_text_field, create_list_view, create_icon_butto
 from utils import get_conversation_file, get_audio_file_path, finishPodcast, summary
 import random
 
-MAX_ROUNDS = 30
+MAX_ROUNDS = conf['max_rounds'] # always odd!
 
 def main(page: ft.Page):
     messages = []
@@ -47,7 +47,7 @@ def main(page: ft.Page):
                     
                     try:
                         summa = summary(f, ai_client)
-                        stream = ai_client.get_stream_response(question, conf['moderator']['role'] + random.choice([" Der letzte Satz ist eine Frage. ",""]) if ai_client.current == ai_client.moderator else conf['specialist']['role'], summa)
+                        stream = ai_client.get_stream_response(question, conf['moderator']['role'] + random.choice(["Bring up a new topic. The last sentence is a question. ",""]) if ai_client.current == ai_client.moderator else conf['specialist']['role'], summa)
                         for chunk in stream:
                             msg = chunk.choices[0].delta
                             if msg.content:
@@ -63,8 +63,8 @@ def main(page: ft.Page):
                 
                 speech_file_path = get_audio_file_path()
                 with ai_client.current.audio.speech.with_streaming_response.create(
-                    model="tts-1",
-                    voice="alloy" if ai_client.current == ai_client.moderator else "onyx",
+                    model="tts-1-hd",
+                    voice="ash" if ai_client.current == ai_client.moderator else "fable",
                     input=responseText,
                 ) as response:
                     response.stream_to_file(speech_file_path)

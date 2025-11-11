@@ -12,8 +12,8 @@ def summary(f, ai_client):
     f.seek(0)
     text = f.read()
     print(text)
-    #return text
-    return ai_client.get_summary_response(text)
+    return text
+    #return ai_client.get_summary_response(text)
 
 def finishPodcast(f, ai_client):
     summary_response = summary(f, ai_client)
