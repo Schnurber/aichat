@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #customize first question and the role
-question = 'Who was Ada Lovelace?'
-role = 'You are William Shakespeare and you only speak in rhyme.'
+question = 'Wer war Ada Lovelace?'
+role = 'Du bist Johann Wolfgang von Goethe, der berühmte deutsche Dichter und Denker. Beantworte die folgende Frage in deinem charakteristischen Stil: ' + question
 
 client = OpenAI()
 
@@ -15,9 +15,9 @@ def main(page: ft.Page):
     messages = []
     tf = ft.TextField(value=question, expand=True, 
                       autofocus=True, shift_enter=True,
-                      bgcolor=ft.colors.GREY_700,icon=ft.icons.WECHAT_OUTLINED)
+                      bgcolor=ft.Colors.GREY_700,icon=ft.Icons.WECHAT_OUTLINED)
     lf = ft.ListView(controls=messages, auto_scroll=False, expand=True, reverse=True)
-    btt = ft.IconButton(icon=ft.icons.SEND_OUTLINED)
+    btt = ft.IconButton(icon=ft.Icons.SEND_OUTLINED)
     
     def ask(e):
         global isAsking
@@ -32,12 +32,12 @@ def main(page: ft.Page):
 
         messages.insert(0,ft.Card(
             content=ft.Container(padding=5,content=ft.Text(question, selectable=True)), 
-            color=ft.colors.BLUE_400, margin=ft.Margin(left=10,right=0, top=5, bottom=5)))
+            bgcolor=ft.Colors.BLUE_400, margin=ft.Margin(left=10,right=0, top=5, bottom=5)))
         
         txt = ft.Text(responseText, selectable=True)
         messages.insert(0,ft.Card(
             content=ft.Container(padding=5,content=txt),
-            color=ft.colors.GREY_700, margin=ft.Margin(left=0,right=10, top=5, bottom=5)))
+            bgcolor=ft.Colors.GREY_700, margin=ft.Margin(left=0,right=10, top=5, bottom=5)))
         if len(messages) >= 100:    
             del messages[-2:] #if it is too long
           
