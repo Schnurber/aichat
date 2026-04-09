@@ -19,7 +19,7 @@ def main(page: ft.Page):
     lf = ft.ListView(controls=messages, auto_scroll=False, expand=True, reverse=True)
     btt = ft.IconButton(icon=ft.Icons.SEND_OUTLINED)
     
-    def ask(e):
+    async def ask(e):
         global isAsking
         question = tf.value
         if isAsking or question == '':
@@ -55,11 +55,11 @@ def main(page: ft.Page):
                 if msg.content is not None:
                     responseText += msg.content
                     txt.value = responseText
-                    lf.scroll_to(0.0, duration=500)
+                    await lf.scroll_to(0.0, duration=500)
                     page.update()
         except:
             txt.value = ' NO INTERNET CONNECTION!'
-            lf.scroll_to(0.0, duration=500)
+            await lf.scroll_to(0.0, duration=500)
 
         btt.disabled = False
         page.update()
@@ -82,4 +82,4 @@ def main(page: ft.Page):
 
     page.add(container)
     
-ft.app(main)
+ft.run(main)
