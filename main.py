@@ -1,6 +1,7 @@
 import flet as ft
 from openai import OpenAI
 from dotenv import load_dotenv
+import asyncio
 load_dotenv()
 
 #customize first question and the role
@@ -10,6 +11,18 @@ role = 'Du bist Johann Wolfgang von Goethe, der berühmte deutsche Dichter und D
 client = OpenAI()
 
 isAsking = False
+
+
+async def speak_text(text: str):
+    if not text:
+        return
+    try:
+        # Startet den macOS Sprachaufruf als Terminal-Prozess.
+        process = await asyncio.create_subprocess_exec("say", text)
+        await process.wait()
+    except Exception:
+        # Audioausgabe ist optional und darf den Chatfluss nicht unterbrechen.
+        pass
 
 def main(page: ft.Page):
     messages = []
@@ -60,7 +73,9 @@ def main(page: ft.Page):
         except:
             txt.value = ' NO INTERNET CONNECTION!'
             await lf.scroll_to(0.0, duration=500)
-
+        # Antwort als Audio über macOS "say" ausgeben.
+        await speak_text(responseText)
+        
         btt.disabled = False
         page.update()
         isAsking = False
